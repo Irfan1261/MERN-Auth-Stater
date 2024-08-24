@@ -41,13 +41,14 @@ export const signin = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      next(errorHandler(402, "Wrong credentials"));
+      next(errorHandler(402, "Incorrect email or password"));
     }
 
     const isPasswordValid = await bcryptjs.compare(password, user.password);
 
     if (!isPasswordValid) {
-      next(errorHandler(401, "Wrong credentials"));
+      next(errorHandler(401, "Incorrect email or password"));
+      return; // Stop the execution of the function
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
